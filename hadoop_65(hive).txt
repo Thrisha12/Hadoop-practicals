@@ -1,0 +1,109 @@
+#hive
+
+[cloudera@quickstart Desktop]$ hive
+
+#creating a table
+hive> create table if not exists emp(eid int,ename string, epos string, esal int, ecom int, edpno int) row format delimited fields terminated by ',';
+OK
+Time taken: 0.558 seconds
+
+
+#describing it
+hive> describe emp;
+OK
+eid                 	int                 	                    
+ename               	string              	                    
+epos                	string              	                    
+esal                	int                 	                    
+ecom                	int                 	                    
+edpno               	int                 	                    
+Time taken: 0.507 seconds, Fetched: 6 row(s)
+
+
+#copying data from the cloudera desktop
+hive> load data local inpath '/home/cloudera/Desktop/emp.csv' into table emp;
+Copying data from file:/home/cloudera/Desktop/emp.csv
+Copying file: file:/home/cloudera/Desktop/emp.csv
+Loading data to table default.emp
+Table default.emp stats: [numFiles=2, numRows=0, totalSize=890, rawDataSize=0]
+OK
+Time taken: 1.661 seconds
+
+
+#creating external table
+hive> create external table if not exists external_table(eid int, ename string, epos string, esal int, ecom int, epdno int)row format delimited fields terminated by      ',' location '/user/cloudera/thrisha/external_table';
+OK
+Time taken: 0.215 seconds
+
+#loading data from emp.csv 
+hive> load data local inpath '/home/cloudera/Desktop/emp.csv' into table external_table;
+Copying data from file:/home/cloudera/Desktop/emp.csv
+Copying file: file:/home/cloudera/Desktop/emp.csv
+Loading data to table default.external_table
+Table default.external_table stats: [numFiles=1, numRows=0, totalSize=445, rawDataSize=0]
+OK
+Time taken: 0.532 seconds
+
+#quitting
+hive> quit
+    > ;
+
+
+#displaying all files and folders
+[cloudera@quickstart Desktop]$ hadoop fs -ls
+Found 25 items
+drwxr-xr-x   - cloudera cloudera          0 2016-10-25 19:58 .Trash
+drwxr-xr-x   - cloudera cloudera          0 2017-07-20 20:12 _sqoop
+drwxr-xr-x   - cloudera cloudera          0 2016-08-05 22:59 abc
+drwxr-xr-x   - cloudera cloudera          0 2017-05-01 19:56 apr
+drwxr-xr-x   - cloudera cloudera          0 2022-11-25 08:54 department
+drwxr-xr-x   - cloudera cloudera          0 2017-03-05 04:10 dvs_hdfs
+drwxr-xr-x   - cloudera cloudera          0 2017-05-29 19:47 dvs_may_hdfs
+drwxr-xr-x   - cloudera cloudera          0 2017-07-21 00:13 orders
+drwxr-xr-x   - cloudera cloudera          0 2017-01-18 21:32 orders1
+drwxr-xr-x   - cloudera cloudera          0 2017-04-09 06:06 orders2
+drwxr-xr-x   - cloudera cloudera          0 2017-07-20 20:12 orders3
+drwxr-xr-x   - cloudera cloudera          0 2017-06-13 20:04 orders4
+drwxr-xr-x   - cloudera cloudera          0 2017-06-15 19:31 orders5
+drwxr-xr-x   - cloudera cloudera          0 2017-06-15 19:47 orders6
+drwxr-xr-x   - cloudera cloudera          0 2017-03-27 20:41 ramesh
+-rw-r--r--   1 cloudera cloudera       4221 2016-08-21 20:30 results.csv
+drwxr-xr-x   - cloudera cloudera          0 2017-06-13 19:28 sqoop_may3
+drwxr-xr-x   - cloudera cloudera          0 2017-06-13 19:44 sqoop_may34
+drwxr-xr-x   - cloudera cloudera          0 2017-06-13 19:53 sqoop_may5
+drwxr-xr-x   - cloudera cloudera          0 2016-08-22 20:30 sqoop_out
+drwxr-xr-x   - cloudera cloudera          0 2016-08-22 20:38 sqoop_out1
+-rw-r--r--   1 cloudera cloudera         14 2017-05-01 19:59 temp
+drwxr-xr-x   - cloudera cloudera          0 2022-11-25 12:39 thrisha
+drwxr-xr-x   - cloudera cloudera          0 2017-07-04 20:12 xyz
+drwxr-xr-x   - cloudera cloudera          0 2017-07-04 20:14 xyz1
+
+
+#displaying particular directory where our table is stored
+[cloudera@quickstart Desktop]$ hadoop fs -ls thrisha
+Found 3 items
+-rw-r--r--   1 cloudera cloudera        445 2022-11-25 10:02 thrisha/emp.csv
+drwxr-xr-x   - hive     cloudera          0 2022-11-25 12:40 thrisha/external_table
+drwxr-xr-x   - cloudera cloudera          0 2022-11-25 11:29 thrisha/pigout
+
+#pig
+[cloudera@quickstart Desktop]$ pig
+
+
+#checking the contents in our table
+grunt> cat thrisha/external_table
+eid,ename,epos,esal,ecom,edpno
+7839,KING,PRESIDENT,5000,,10
+7782,CLARK,MANAGER,2450,,10
+7934,MILLER,CLERK,1300,,10
+7369,SMITH,CLERK,800,,20
+7566,JONES,MANAGER,2975,,20
+7876,ADAMS,CLERK,1100,,20
+7902,FORD,ANALYST,3000,,20
+7788,SCOTT,ANALYST,3000,,20
+7499,ALLEN,SALESMAN,1600,300,30
+7844,TURNER,SALESMAN,1500,0,30
+7900,JAMES,CLERK,950,,30
+7698,BLAKE,MANAGER,2850,,30
+7654,MARTIN,SALESMAN,1250,1400,30
+7521,WARD,SALESMAN,1250,500,30
